@@ -1,0 +1,5 @@
+{
+  "name": "MoviesGPT",
+  "description": "A production-grade, AI-powered movie recommendation engine that delivers highly personalized and explainable film suggestions.",
+  "requestFramePermissions": []
+}
