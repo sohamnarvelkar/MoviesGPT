@@ -1,3 +1,4 @@
+
 import { GoogleGenAI, Chat, GenerateContentResponse } from "@google/genai";
 import { RecommendationResponse, Source, Language } from "../types";
 
@@ -66,17 +67,15 @@ class GeminiService {
   private ai: GoogleGenAI;
 
   constructor() {
-    const apiKey = process.env.API_KEY;
-    if (!apiKey) {
-      console.warn("API_KEY is missing. Service will fail.");
-    }
-    this.ai = new GoogleGenAI({ apiKey: apiKey || 'dummy-key-to-prevent-crash' });
+    // Initializing with the environment variable directly as per guidelines
+    this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
   }
 
   private initChat() {
     if (!this.chat) {
+      // Using gemini-3-flash-preview for the recommendation engine
       this.chat = this.ai.chats.create({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3-flash-preview',
         config: {
           systemInstruction: SYSTEM_INSTRUCTION,
           // Enable Google Search for real-time data
@@ -143,6 +142,7 @@ class GeminiService {
       // Wrap in retry logic
       const result = await this.withRetry<GenerateContentResponse>(() => this.chat!.sendMessage({ message: languagePrompt }));
       
+      // Accessing text property directly as per extraction guidelines
       let text = result.text;
       
       if (!text) {
@@ -229,8 +229,9 @@ class GeminiService {
     try {
       const prompt = `Write a captivating, 1-2 sentence synopsis for "${title}" (${year}) in ${language} language. Return ONLY the synopsis text.`;
       
+      // Using gemini-3-flash-preview for synopsis generation as per text task guidelines
       const response = await this.ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3-flash-preview',
         contents: prompt,
       });
       

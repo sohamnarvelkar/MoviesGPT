@@ -1,3 +1,4 @@
+
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertTriangle, RefreshCcw } from 'lucide-react';
 
@@ -10,7 +11,8 @@ interface State {
   error?: Error;
 }
 
-export class ErrorBoundary extends Component<Props, State> {
+// Using React.Component explicitly to ensure props type is correctly inherited
+export class ErrorBoundary extends React.Component<Props, State> {
   public state: State = {
     hasError: false
   };
@@ -28,7 +30,10 @@ export class ErrorBoundary extends Component<Props, State> {
   };
 
   public render() {
-    if (this.state.hasError) {
+    const { hasError, error } = this.state;
+    const { children } = this.props;
+
+    if (hasError) {
       return (
         <div className="min-h-screen bg-background text-textMain flex items-center justify-center p-4">
           <div className="bg-surface border border-surfaceHighlight rounded-2xl p-8 max-w-md w-full text-center shadow-2xl">
@@ -49,10 +54,10 @@ export class ErrorBoundary extends Component<Props, State> {
               Reload Page
             </button>
             
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {process.env.NODE_ENV === 'development' && error && (
                 <div className="mt-8 p-4 bg-black/50 rounded-lg text-left overflow-auto max-h-40">
                     <code className="text-xs text-red-300 font-mono">
-                        {this.state.error.toString()}
+                        {error.toString()}
                     </code>
                 </div>
             )}
@@ -61,6 +66,6 @@ export class ErrorBoundary extends Component<Props, State> {
       );
     }
 
-    return this.props.children;
+    return children;
   }
 }

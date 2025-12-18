@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Movie, Language } from '../types';
 import { Star, Clock, Calendar, Info, Bookmark, Check, Share2, Play, FileText, Globe, Clapperboard, Sparkles, Tv, Layers } from 'lucide-react';
@@ -44,7 +45,8 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, index, onToggle, on
         setSynopsis(''); // Clear previous synopsis while loading new one
         
         try {
-            const text = await geminiService.getMovieSynopsis(movie.title, movie.year, language);
+            // Added explicit cast to Language to fix "string not assignable to Language" error
+            const text = await geminiService.getMovieSynopsis(movie.title, movie.year, language as Language);
             if (active) setSynopsis(text);
         } catch (e) {
             if (active) setSynopsis(t.noSynopsis);
@@ -56,7 +58,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, index, onToggle, on
     loadSynopsis();
 
     return () => { active = false; };
-  }, [movie.title, movie.year, movie.synopsis, language]);
+  }, [movie.title, movie.year, movie.synopsis, language, t.noSynopsis]);
 
   const toggleWatchlist = (e: React.MouseEvent) => {
     e.stopPropagation();
